@@ -3,12 +3,14 @@ package com.chiocchetti.springit.security;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private UserDetailsServiceImpl userDetailsService;
@@ -29,16 +31,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .antMatchers("/link/**").permitAll()
                     .antMatchers("/").permitAll()
                     .antMatchers("/h2-console/**").permitAll()
-                .and()
+                    .and()
                 .formLogin()
                     .loginPage("/login").permitAll()
                     .usernameParameter("email")
-                .and()
+                    .and()
                 .logout()
-                .and()
-                .rememberMe();
-//                .csrf().disable()
-//                .headers().frameOptions().disable();
+                    .and()
+                .rememberMe()
+                    .and()
+                .csrf().disable()
+                .headers().frameOptions().disable();
     }
 
     @Override

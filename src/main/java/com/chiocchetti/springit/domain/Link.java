@@ -29,9 +29,11 @@ public class Link extends Auditable {
     @Id
     @GeneratedValue
     private Long id;
+
     @NonNull
     @NotEmpty(message = "Please enter a title")
     private String title;
+
     @NonNull
     @NotEmpty(message = "Please enter a URL")
     @URL(message = "Please enter a valid URL")
@@ -40,6 +42,11 @@ public class Link extends Auditable {
     // comments
     @OneToMany(mappedBy = "link")
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "link")
+    private List<Vote> votes = new ArrayList<>();
+
+    private int voteCount = 0;
 
     public void addComment(Comment comment) {
 

@@ -21,15 +21,12 @@ import javax.validation.Valid;
 import java.util.Optional;
 
 @Controller
-// @RequestMapping("/links")
 public class LinkController {
 
     private static final Logger logger = LoggerFactory.getLogger(LinkController.class);
 
     private LinkService linkService;
-
     private CommentService commentService;
-
 
     public LinkController(LinkService linkService, CommentService commentService) {
         this.linkService = linkService;
@@ -38,12 +35,12 @@ public class LinkController {
 
     @GetMapping("/")
     public String list(Model model) {
-        model.addAttribute("links", linkService.findAll());
+        model.addAttribute("links",linkService.findAll());
         return "link/list";
     }
 
     @GetMapping("/link/{id}")
-    public String read(@PathVariable Long id,Model model) {
+    public String read(@PathVariable Long id, Model model) {
         Optional<Link> link = linkService.findById(id);
         if( link.isPresent() ) {
             Link currentLink = link.get();
@@ -73,9 +70,9 @@ public class LinkController {
         } else {
             // save our link
             linkService.save(link);
-            logger.info("New Link was saved successfully.");
+            logger.info("New link was saved successfully");
             redirectAttributes
-                    .addAttribute("id", link.getId())
+                    .addAttribute("id",link.getId())
                     .addFlashAttribute("success",true);
             return "redirect:/link/{id}";
         }
@@ -83,12 +80,12 @@ public class LinkController {
 
     @Secured({"ROLE_USER"})
     @PostMapping("/link/comments")
-    public String addComment(@Valid Comment comment, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
-        if( bindingResult.hasErrors() ) {
-            logger.info("Something went wrong.");
+    public String addComment(@Valid Comment comment, BindingResult bindingResult){
+        if( bindingResult.hasErrors() ){
+            logger.info("There was a problem adding a new comment.");
         } else {
-            logger.info("New Comment Saved!");
             commentService.save(comment);
+            logger.info("New comment was saved successfully.");
         }
         return "redirect:/link/" + comment.getLink().getId();
     }

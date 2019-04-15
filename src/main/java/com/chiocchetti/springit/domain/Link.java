@@ -5,10 +5,7 @@ import lombok.*;
 import org.hibernate.validator.constraints.URL;
 import org.ocpsoft.prettytime.PrettyTime;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -20,26 +17,22 @@ import java.util.List;
 
 @Entity
 @RequiredArgsConstructor
-@Getter
-@Setter
-@ToString
+@Getter @Setter
 @NoArgsConstructor
 public class Link extends Auditable {
 
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
     private Long id;
 
     @NonNull
-    @NotEmpty(message = "Please enter a title")
+    @NotEmpty(message = "Please enter a title.")
     private String title;
 
     @NonNull
-    @NotEmpty(message = "Please enter a URL")
-    @URL(message = "Please enter a valid URL")
+    @NotEmpty(message = "Please enter a url.")
+    @URL(message = "Please enter a valid url.")
     private String url;
 
-    // comments
     @OneToMany(mappedBy = "link")
     private List<Comment> comments = new ArrayList<>();
 
@@ -48,8 +41,10 @@ public class Link extends Auditable {
 
     private int voteCount = 0;
 
-    public void addComment(Comment comment) {
+    @ManyToOne
+    private User user;
 
+    public void addComment(Comment comment) {
         comments.add(comment);
     }
 
@@ -67,5 +62,4 @@ public class Link extends Auditable {
     private Date convertToDateViaInstant(LocalDateTime dateToConvert) {
         return java.util.Date.from(dateToConvert.atZone(ZoneId.systemDefault()).toInstant());
     }
-
 }
